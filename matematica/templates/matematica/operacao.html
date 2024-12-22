@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <script>
+        function updateFields() {
+            const operation = document.getElementById("id_operation").value;
+            const num2Field = document.getElementById("num2_field");
+
+            // Esconde ou exibe o campo Número 2 com base na operação
+            if (operation === "square_root" || operation === "factorial") {
+                num2Field.style.display = "none"; // Esconde o campo
+                document.getElementById("id_num2").value = ""; // Limpa o valor do campo 2
+            } else {
+                num2Field.style.display = "block"; // Mostra o campo
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Atualiza os campos ao carregar a página
+            updateFields();
+
+            // Adiciona evento para reagir à mudança de operação
+            const operationField = document.getElementById("id_operation");
+            operationField.addEventListener("change", updateFields);
+        });
+    </script>
+</head>
+<body>
+    <h1>Calculadora</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <p>{{ form.operation.label }}: {{ form.operation }}</p>
+        <p>{{ form.num1.label }}: {{ form.num1 }}</p>
+        <p id="num2_field">{{ form.num2.label }}: {{ form.num2 }}</p>
+        <button type="submit">Calcular</button>
+    </form>
+
+    {% if result %}
+        <h2>Resultado: {{ result }}</h2>
+    {% endif %}
+
+    {% if error %}
+        <h2 style="color: red;">Erro: {{ error }}</h2>
+    {% endif %}
+</body>
+</html>
