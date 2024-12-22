@@ -76,9 +76,17 @@ def logarithm(a, base):
         raise ValueError("A base do logaritmo deve ser maior que zero.")
     return math.log(a, base)
 
+import uuid
+
+def generate_error_id():
+    """Função para gerar uma ID única para cada erro."""
+    return str(uuid.uuid4())
+
 def operacao(request):
     result = None
     error = None
+    error_id = None
+
     if request.method == 'POST':
         form = OperacaoForm(request.POST)
         if form.is_valid():
@@ -102,16 +110,17 @@ def operacao(request):
                 elif operation == 'square_root':
                     result = square_root(num1)
                 elif operation == 'factorial':
-                    result = factorial(int(num1))  # Converta para inteiro para o fatorial
+                    result = factorial(int(num1))
                 elif operation == 'logarithm':
                     result = logarithm(num1, num2)
 
             except ValueError as e:
-                error = str(e)
+                error_id = generate_error_id()  # Gera uma ID exclusiva
+                error = f"Erro inesperado. Código de erro: {error_id}. Entre em contato com o suporte."
         else:
             error = "Por favor, corrija os erros no formulário."
 
     else:
         form = OperacaoForm()
 
-    return render(request, 'matematica/operacao.html', {'form': form, 'result': result, 'error': error})
+    return render(request, 'matematica/operacao.html', {'form': form, 'result': result, 'error': error, 'error_id': error_id})
